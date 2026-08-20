@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { prisma } from "@/lib/db/prisma";
 import { hashPassword, validatePasswordStrength } from "@/lib/auth/session";
 

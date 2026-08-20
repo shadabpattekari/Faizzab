@@ -29,16 +29,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 const readinessFields = [
-  { name: "name", label: "Name", required: true },
-  { name: "email", label: "Work email", type: "email" as const, required: true },
-  { name: "company", label: "Organization", required: true },
-  { name: "jobTitle", label: "Job title", required: true },
-  { name: "telephone", label: "Telephone", type: "tel" as const },
+  { name: "name", label: "Full Name", required: true },
+  { name: "email", label: "Business Email", type: "email" as const, required: true },
+  { name: "company", label: "Company", required: true },
+  { name: "jobTitle", label: "Job Title", required: true },
+  { name: "telephone", label: "Telephone (optional)", type: "tel" as const },
   { name: "country", label: "Country", required: true },
   { name: "industry", label: "Industry", required: true },
   {
     name: "organizationSize",
-    label: "Organization size",
+    label: "Organization Size",
     type: "select" as const,
     required: true,
     options: [
@@ -51,20 +51,20 @@ const readinessFields = [
   },
   {
     name: "currentStatus",
-    label: "Current ISO 27001 / GRC status",
+    label: "Current ISO/GRC Status",
     required: true,
     placeholder: "For example: starting, partially implemented, or preparing for assurance",
   },
   {
     name: "reason",
-    label: "Why are you seeking an assessment?",
+    label: "Reason for Assessment",
     type: "textarea" as const,
     required: true,
     rows: 4,
   },
   {
     name: "targetTimeframe",
-    label: "Target timeframe",
+    label: "Target Timeframe",
     type: "select" as const,
     required: true,
     options: [
@@ -76,13 +76,13 @@ const readinessFields = [
   },
   {
     name: "message",
-    label: "Additional context",
+    label: "Message",
     type: "textarea" as const,
     rows: 4,
   },
   {
     name: "privacyAccepted",
-    label: "I have read and accept the Privacy Policy.",
+    label: "I acknowledge the Privacy Policy and agree that FaizZab may contact me about this request.",
     type: "checkbox" as const,
     required: true,
   },

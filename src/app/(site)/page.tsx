@@ -25,7 +25,7 @@ const pillars = [
       "Implementation-focused advisory across governance, risk, compliance, information security, privacy and assurance.",
     status: BUSINESS_STATUS.consulting.key,
     cta: "Request a Consultation",
-    href: "/services",
+    href: "/contact?topic=consultation",
   },
   {
     title: "FaizZab Academy",
@@ -68,7 +68,12 @@ export default function HomePage() {
               <ButtonLink href="/contact" size="lg">
                 Request a Consultation
               </ButtonLink>
-              <ButtonLink href="/services" variant="secondary" size="lg">
+              <ButtonLink
+                href="/services"
+                variant="secondary"
+                size="lg"
+                className="border-white/30 bg-white/10 text-white ring-white/40 hover:bg-white/20"
+              >
                 Explore Services
               </ButtonLink>
             </div>

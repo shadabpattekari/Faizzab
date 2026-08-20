@@ -13,20 +13,20 @@ export const metadata: Metadata = {
 
 const contactFields = [
   { name: "name", label: "Name", required: true },
-  { name: "email", label: "Email", type: "email" as const, required: true },
-  { name: "company", label: "Organization" },
-  { name: "telephone", label: "Telephone", type: "tel" as const },
+  { name: "email", label: "Business Email", type: "email" as const, required: true },
+  { name: "company", label: "Company (optional)" },
+  { name: "telephone", label: "Telephone (optional)", type: "tel" as const },
   { name: "subject", label: "Subject", required: true },
   {
     name: "message",
-    label: "How can FaizZab help?",
+    label: "Message",
     type: "textarea" as const,
     required: true,
     rows: 6,
   },
   {
     name: "privacyAccepted",
-    label: "I have read and accept the Privacy Policy.",
+    label: "I acknowledge the Privacy Policy and agree that FaizZab may contact me about this enquiry.",
     type: "checkbox" as const,
     required: true,
   },

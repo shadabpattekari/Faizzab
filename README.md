@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FaizZab Website
 
-## Getting Started
+Production website for **FAIZZAB INTEGRITY PRIVATE LIMITED** (brand: **FaizZab**).
 
-First, run the development server:
+- Domain: [https://faizzab.com](https://faizzab.com)
+- Stack: Next.js 15 (App Router), React, TypeScript, Tailwind CSS, Prisma, MySQL/MariaDB
+
+## Quick start (local)
+
+1. Copy environment file:
+
+```bash
+cp .env.example .env
+```
+
+2. Set `DATABASE_URL`, SMTP values, and bootstrap admin values in `.env`.
+
+3. Install and prepare database:
+
+```bash
+npm install
+npx prisma migrate deploy
+npm run db:seed
+npm run bootstrap:admin
+```
+
+4. Run locally:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). Admin: [http://localhost:3000/admin/login](http://localhost:3000/admin/login).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Local development |
+| `npm run build` | Production build |
+| `npm start` | Start production server |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | TypeScript check |
+| `npm test` | Unit tests |
+| `npm run db:push` | Push schema (dev) |
+| `npm run db:migrate` | Apply migrations |
+| `npm run db:seed` | Seed content |
+| `npm run bootstrap:admin` | Create initial Super Admin from env |
 
-## Learn More
+## Documentation
 
-To learn more about Next.js, take a look at the following resources:
+- [Hostinger deployment](docs/DEPLOY_HOSTINGER.md)
+- [Admin guide](docs/ADMIN_GUIDE.md)
+- [QA checklist](docs/QA_CHECKLIST.md)
+- [Security notes](docs/SECURITY_NOTES.md)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Business status (public)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Consulting — **AVAILABLE NOW**
+- FaizZab Academy — **COMING SOON**
+- FaizZab GRC Platform — **IN DEVELOPMENT**
+- ISO 27001 GRC Starter Toolkit — **COMING SOON** (initial)
 
-## Deploy on Vercel
+## Legal entity
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+FAIZZAB INTEGRITY PRIVATE LIMITED  
+CIN: U62020PN2026PTC259388  
+Email: info@faizzab.com  
+Telephone: +91 91757 68019  
+Queries / Grievances: Nazneen Pattekari, Director
