@@ -1,0 +1,292 @@
+// FaizZab Integrity Private Limited — Prisma schema (MySQL/MariaDB)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  CONTENT_EDITOR
+}
+
+enum LeadType {
+  GENERAL
+  CONSULTATION
+  READINESS_ASSESSMENT
+  TOOLKIT
+  ACADEMY
+  GRC_PLATFORM
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL_SENT
+  WON
+  CLOSED
+  SPAM
+}
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum ProductStatus {
+  AVAILABLE_NOW
+  COMING_SOON
+  IN_DEVELOPMENT
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(CONTENT_EDITOR)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  lastLoginAt  DateTime?
+  sessions     Session[]
+  resetTokens  PasswordResetToken[]
+  auditLogs    AuditLog[] @relation("AuditActor")
+
+  @@index([email])
+  @@index([role])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  userAgent String?  @db.VarChar(512)
+  ipAddress String?  @db.VarChar(64)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actorEmail String?  @db.VarChar(255)
+  action     String   @db.VarChar(128)
+  entityType String?  @db.VarChar(64)
+  entityId   String?  @db.VarChar(64)
+  metadata   Json?
+  ipAddress  String?  @db.VarChar(64)
+  createdAt  DateTime @default(now())
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([action])
+  @@index([actorId])
+}
+
+model Enquiry {
+  id               String     @id @default(cuid())
+  leadType         LeadType
+  status           LeadStatus @default(NEW)
+  name             String     @db.VarChar(200)
+  email            String     @db.VarChar(255)
+  company          String?    @db.VarChar(200)
+  jobTitle         String?    @db.VarChar(200)
+  telephone        String?    @db.VarChar(50)
+  country          String?    @db.VarChar(100)
+  industry         String?    @db.VarChar(150)
+  organizationSize String?    @db.VarChar(100)
+  subject          String?    @db.VarChar(300)
+  message          String?    @db.Text
+  courseInterest   String?    @db.VarChar(300)
+  areasOfInterest  String?    @db.Text
+  currentStatus    String?    @db.VarChar(200)
+  reason           String?    @db.Text
+  targetTimeframe  String?    @db.VarChar(100)
+  privacyAccepted  Boolean    @default(false)
+  honeypotHit      Boolean    @default(false)
+  ipAddress        String?    @db.VarChar(64)
+  userAgent        String?    @db.VarChar(512)
+  emailNotified    Boolean    @default(false)
+  adminNotes       String?    @db.Text
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  @@index([leadType])
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+}
+
+model Service {
+  id               String        @id @default(cuid())
+  slug             String        @unique @db.VarChar(200)
+  title            String        @db.VarChar(300)
+  shortDescription String        @db.Text
+  longDescription  String        @db.LongText
+  status           ProductStatus @default(AVAILABLE_NOW)
+  isFeatured       Boolean       @default(false)
+  sortOrder        Int           @default(0)
+  ctaLabel         String?       @db.VarChar(100)
+  ctaHref          String?       @db.VarChar(300)
+  methodology      Json?
+  deliverables     Json?
+  coverageAreas    Json?
+  disclaimer       String?       @db.LongText
+  seoTitle         String?       @db.VarChar(200)
+  seoDescription   String?       @db.VarChar(500)
+  publishStatus    PublishStatus @default(PUBLISHED)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([publishStatus])
+  @@index([sortOrder])
+}
+
+model ToolkitProduct {
+  id              String        @id @default(cuid())
+  slug            String        @unique @db.VarChar(200)
+  title           String        @db.VarChar(300)
+  subtitle        String?       @db.VarChar(500)
+  description     String        @db.LongText
+  status          ProductStatus @default(COMING_SOON)
+  contents        Json?
+  licenceSummary  String?       @db.LongText
+  disclaimer      String?       @db.LongText
+  ctaLabel        String?       @db.VarChar(100)
+  seoTitle        String?       @db.VarChar(200)
+  seoDescription  String?       @db.VarChar(500)
+  publishStatus   PublishStatus @default(PUBLISHED)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model AcademyCourse {
+  id              String        @id @default(cuid())
+  slug            String        @unique @db.VarChar(200)
+  title           String        @db.VarChar(300)
+  summary         String        @db.Text
+  description     String        @db.LongText
+  status          ProductStatus @default(COMING_SOON)
+  sortOrder       Int           @default(0)
+  audience        String?       @db.Text
+  outcomes        Json?
+  futureFeatures  Json?
+  seoTitle        String?       @db.VarChar(200)
+  seoDescription  String?       @db.VarChar(500)
+  publishStatus   PublishStatus @default(PUBLISHED)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([sortOrder])
+  @@index([publishStatus])
+}
+
+model Insight {
+  id              String        @id @default(cuid())
+  slug            String        @unique @db.VarChar(200)
+  title           String        @db.VarChar(300)
+  excerpt         String        @db.Text
+  content         String        @db.LongText
+  category        String        @db.VarChar(100)
+  publishStatus   PublishStatus @default(DRAFT)
+  publishedAt     DateTime?
+  seoTitle        String?       @db.VarChar(200)
+  seoDescription  String?       @db.VarChar(500)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([publishStatus, publishedAt])
+  @@index([category])
+}
+
+model FAQ {
+  id            String        @id @default(cuid())
+  question      String        @db.VarChar(500)
+  answer        String        @db.Text
+  category      String?       @db.VarChar(100)
+  sortOrder     Int           @default(0)
+  publishStatus PublishStatus @default(PUBLISHED)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([sortOrder])
+  @@index([publishStatus])
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique @db.VarChar(100)
+  value     Json
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model HomepageSection {
+  id        String   @id @default(cuid())
+  key       String   @unique @db.VarChar(100)
+  title     String?  @db.VarChar(300)
+  content   Json
+  isVisible Boolean  @default(true)
+  sortOrder Int      @default(0)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model SeoEntry {
+  id              String   @id @default(cuid())
+  path            String   @unique @db.VarChar(300)
+  title           String   @db.VarChar(200)
+  description     String   @db.VarChar(500)
+  ogTitle         String?  @db.VarChar(200)
+  ogDescription   String?  @db.VarChar(500)
+  noindex         Boolean  @default(false)
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+}
+
+model RateLimitRecord {
+  id          String   @id @default(cuid())
+  key         String   @db.VarChar(255)
+  count       Int      @default(1)
+  windowStart DateTime @default(now())
+  expiresAt   DateTime
+
+  @@unique([key, windowStart])
+  @@index([key])
+  @@index([expiresAt])
+}
+
+model GrcPlatformContent {
+  id             String        @id @default(cuid())
+  title          String        @db.VarChar(300)
+  status         ProductStatus @default(IN_DEVELOPMENT)
+  summary        String        @db.Text
+  description    String        @db.LongText
+  features       Json?
+  seoTitle       String?       @db.VarChar(200)
+  seoDescription String?       @db.VarChar(500)
+  updatedAt      DateTime      @updatedAt
+  createdAt      DateTime      @default(now())
+}
