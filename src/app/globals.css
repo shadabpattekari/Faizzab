@@ -1,26 +1,119 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy-50: #eef2f7;
+  --navy-100: #d9e2ef;
+  --navy-200: #b3c5df;
+  --navy-700: #1e3a5f;
+  --navy-800: #152a45;
+  --navy-900: #0f1f33;
+  --navy-950: #0a1628;
+  --teal-50: #effaf8;
+  --teal-200: #9adfd4;
+  --teal-600: #0f766e;
+  --teal-700: #0d5f59;
+  --teal-800: #0a4a45;
+  --background: #f7f9fc;
+  --foreground: #0f1f33;
+  --surface: #ffffff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-navy-50: var(--navy-50);
+  --color-navy-100: var(--navy-100);
+  --color-navy-200: var(--navy-200);
+  --color-navy-700: var(--navy-700);
+  --color-navy-800: var(--navy-800);
+  --color-navy-900: var(--navy-900);
+  --color-navy-950: var(--navy-950);
+  --color-teal-50: var(--teal-50);
+  --color-teal-200: var(--teal-200);
+  --color-teal-600: var(--teal-600);
+  --color-teal-700: var(--teal-700);
+  --color-teal-800: var(--teal-800);
+  --font-sans: var(--font-source-sans);
+  --font-display: var(--font-libre);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-source-sans), "Segoe UI", sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-libre), Georgia, "Times New Roman", serif;
+}
+
+.hero-surface {
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(15, 118, 110, 0.18), transparent 55%),
+    radial-gradient(900px 420px at 10% 10%, rgba(30, 58, 95, 0.35), transparent 50%),
+    linear-gradient(160deg, #0a1628 0%, #12263f 48%, #0f1f33 100%);
+}
+
+.section-alt {
+  background:
+    linear-gradient(180deg, #ffffff 0%, #f3f6fb 100%);
+}
+
+.fade-up {
+  animation: fadeUp 0.7s ease-out both;
+}
+
+.fade-up-delay {
+  animation: fadeUp 0.8s ease-out 0.12s both;
+}
+
+.fade-up-delay-2 {
+  animation: fadeUp 0.85s ease-out 0.24s both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.prose-legal h2 {
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--navy-950);
+}
+
+.prose-legal p,
+.prose-legal li {
+  color: #334155;
+  line-height: 1.7;
+}
+
+.prose-legal ul {
+  margin: 0.75rem 0 1rem;
+  list-style: disc;
+  padding-left: 1.25rem;
 }
