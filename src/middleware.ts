@@ -21,12 +21,6 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    if (pathname === "/admin/login" && token) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/admin";
-      return NextResponse.redirect(url);
-    }
-
     const response = NextResponse.next();
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
     return response;

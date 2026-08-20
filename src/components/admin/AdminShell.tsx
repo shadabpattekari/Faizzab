@@ -8,7 +8,6 @@ import {
   BriefcaseBusiness,
   ClipboardList,
   FileQuestion,
-  FileText,
   GraduationCap,
   Home,
   KeyRound,

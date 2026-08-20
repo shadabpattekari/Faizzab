@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/admin/AuthForms";
+import { getSessionUser } from "@/lib/auth/session";
 
 export const metadata: Metadata = { title: "Sign in" };
 
@@ -8,6 +10,8 @@ export default async function AdminLoginPage({
 }: {
   searchParams: Promise<{ next?: string; reset?: string; password?: string }>;
 }) {
+  const user = await getSessionUser();
+  if (user) redirect("/admin");
   const query = await searchParams;
   const nextPath = query.next?.startsWith("/admin") ? query.next : "/admin";
   return (
