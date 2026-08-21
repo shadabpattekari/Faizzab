@@ -12,6 +12,7 @@ type Field =
       options?: { value: string; label: string }[];
       placeholder?: string;
       rows?: number;
+      defaultValue?: string;
     };
 
 export function LeadForm({
@@ -147,7 +148,7 @@ export function LeadForm({
                     name={field.name}
                     required={field.required}
                     className={common}
-                    defaultValue=""
+                    defaultValue={field.defaultValue || ""}
                     aria-invalid={Boolean(err)}
                     aria-describedby={err ? `${id}-error` : undefined}
                   >

@@ -22,6 +22,7 @@ export const consultationFormSchema = z.object({
   email: z.string().trim().email().max(255),
   company: z.string().trim().max(200).optional().or(z.literal("")),
   telephone: z.string().trim().max(50).optional().or(z.literal("")),
+  serviceInterest: z.string().trim().min(2).max(300),
   message: z.string().trim().min(10).max(5000),
   privacyAccepted: privacySchema,
   website: honeypot,
