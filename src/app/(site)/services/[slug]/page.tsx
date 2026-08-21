@@ -12,7 +12,10 @@ import {
   getPublishedServices,
 } from "@/lib/content/loaders";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import type { ServiceContent } from "@/lib/content/services";
+import {
+  RELATED_SERVICE_LINKS,
+  type ServiceContent,
+} from "@/lib/content/services";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -249,6 +252,11 @@ function ReadinessAssessmentPage({ service }: { service: ServiceContent }) {
 }
 
 function StandardServicePage({ service }: { service: ServiceContent }) {
+  const related = RELATED_SERVICE_LINKS[service.slug] || [];
+  const hasMethodology = Boolean(service.methodology?.length);
+  const hasDeliverables = Boolean(service.deliverables?.length);
+  const hasCoverage = Boolean(service.coverageAreas?.length);
+
   return (
     <>
       <section className="hero-surface text-white">
@@ -265,6 +273,9 @@ function StandardServicePage({ service }: { service: ServiceContent }) {
           <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
             {service.shortDescription}
           </p>
+          <ButtonLink href={service.ctaHref} className="mt-8" size="lg">
+            {service.ctaLabel || "Request a Consultation"}
+          </ButtonLink>
         </div>
       </section>
 
@@ -285,31 +296,117 @@ function StandardServicePage({ service }: { service: ServiceContent }) {
             A short conversation can clarify your objective, present state and a suitable scope
             for support.
           </p>
-          <ButtonLink href="/contact?topic=consultation" className="mt-7">
-            Request a Consultation
+          <ButtonLink href={service.ctaHref} className="mt-7">
+            {service.ctaLabel || "Request a Consultation"}
           </ButtonLink>
         </aside>
       </section>
 
-      <section className="section-alt border-y border-slate-200">
-        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
-          <h2 className="font-display text-3xl font-bold text-navy-950">
-            Implementation-oriented by design
-          </h2>
-          <div className="mt-7 grid gap-5 md:grid-cols-3">
-            {[
-              ["Clarify", "Define scope, responsibilities and the intended governance outcome."],
-              ["Prioritize", "Sequence gaps and actions according to risk, value and feasibility."],
-              ["Evidence", "Build operating routines and evidence that can be maintained over time."],
-            ].map(([title, description]) => (
-              <article key={title} className="rounded-lg border border-slate-200 bg-white p-5">
-                <h3 className="font-display text-xl font-bold text-navy-950">{title}</h3>
-                <p className="mt-3 leading-7 text-slate-600">{description}</p>
-              </article>
-            ))}
+      {hasMethodology ? (
+        <section className="section-alt border-y border-slate-200">
+          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+            <h2 className="font-display text-3xl font-bold text-navy-950">Methodology</h2>
+            <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {service.methodology?.map((step, index) => (
+                <li key={step} className="rounded-lg border border-slate-200 bg-white p-5">
+                  <span className="text-sm font-bold text-teal-700">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <p className="mt-3 font-semibold text-navy-950">{step}</p>
+                </li>
+              ))}
+            </ol>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : (
+        <section className="section-alt border-y border-slate-200">
+          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+            <h2 className="font-display text-3xl font-bold text-navy-950">
+              Implementation-oriented by design
+            </h2>
+            <div className="mt-7 grid gap-5 md:grid-cols-3">
+              {[
+                ["Clarify", "Define scope, responsibilities and the intended governance outcome."],
+                [
+                  "Prioritize",
+                  "Sequence gaps and actions according to risk, value and feasibility.",
+                ],
+                [
+                  "Evidence",
+                  "Build operating routines and evidence that can be maintained over time.",
+                ],
+              ].map(([title, description]) => (
+                <article key={title} className="rounded-lg border border-slate-200 bg-white p-5">
+                  <h3 className="font-display text-xl font-bold text-navy-950">{title}</h3>
+                  <p className="mt-3 leading-7 text-slate-600">{description}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {hasDeliverables || hasCoverage ? (
+        <section className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8">
+          {hasDeliverables ? (
+            <div>
+              <h2 className="font-display text-3xl font-bold text-navy-950">Deliverables</h2>
+              <ul className="mt-7 space-y-3">
+                {service.deliverables?.map((item) => (
+                  <li key={item} className="flex gap-3 leading-7 text-slate-600">
+                    <span className="font-bold text-teal-700" aria-hidden="true">
+                      ✓
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          {hasCoverage ? (
+            <div>
+              <h2 className="font-display text-3xl font-bold text-navy-950">Coverage</h2>
+              <div className="mt-7 flex flex-wrap gap-2">
+                {service.coverageAreas?.map((area) => (
+                  <span
+                    key={area}
+                    className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700"
+                  >
+                    {area}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
+
+      {service.disclaimer ? (
+        <section className="border-y border-amber-200 bg-amber-50">
+          <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+            <h2 className="font-semibold text-amber-950">Important scope disclaimer</h2>
+            <p className="mt-2 max-w-5xl leading-7 text-amber-900">{service.disclaimer}</p>
+          </div>
+        </section>
+      ) : null}
+
+      {related.length ? (
+        <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+          <h2 className="font-display text-2xl font-bold text-navy-950">Related services</h2>
+          <ul className="mt-6 flex flex-wrap gap-3">
+            {related.map((item) => (
+              <li key={item.slug}>
+                <Link
+                  href={`/services/${item.slug}`}
+                  className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-navy-900 hover:border-teal-600 hover:text-teal-700"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </>
   );
 }

@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
     path: "/services",
     title: "Services",
     description:
-      "Practical FaizZab consulting services across ISO management systems, GRC, privacy, AI governance, audit and risk.",
+      "Practical FaizZab consulting across ISO, GRC, privacy, AI governance, SOC 2, PCI DSS, NIST CSF, audit and risk.",
   });
 }
 

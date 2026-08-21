@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
       telephone: data.telephone,
       message: data.message,
       subject: "Consultation request",
+      areasOfInterest: data.serviceInterest,
       privacyAccepted: data.privacyAccepted,
     }),
   });
