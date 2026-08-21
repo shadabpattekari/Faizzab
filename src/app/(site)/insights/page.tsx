@@ -2,15 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { prisma } from "@/lib/db/prisma";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Insights",
-  description:
-    "Practical FaizZab perspectives on governance, risk, compliance, information security, privacy and assurance.",
-  alternates: { canonical: "/insights" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    path: "/insights",
+    title: "Insights",
+    description:
+      "Practical FaizZab perspectives on governance, risk, compliance, information security, privacy and assurance.",
+  });
+}
 
 async function getPublishedInsights() {
   try {
