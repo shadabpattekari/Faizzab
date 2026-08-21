@@ -49,10 +49,11 @@ const contactFields = [
 ];
 
 function consultationFields(defaultInterest?: string) {
-  const interestOptions = CONSULTATION_SERVICE_INTERESTS.map((item) => ({
-    value: item.value,
-    label: item.label,
-  }));
+  const interestOptions: { value: string; label: string }[] =
+    CONSULTATION_SERVICE_INTERESTS.map((item) => ({
+      value: item.value,
+      label: item.label,
+    }));
 
   // Ensure a preselected interest from a service CTA is present even if labels differ slightly.
   if (defaultInterest && !interestOptions.some((o) => o.value === defaultInterest)) {

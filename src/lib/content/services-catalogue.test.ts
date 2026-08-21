@@ -32,7 +32,7 @@ describe("new consulting services catalogue", () => {
     const nist = getServiceBySlug("nist-csf-cybersecurity-maturity")!;
 
     expect(soc2.disclaimer).toContain("independent CPA/audit firm");
-    expect(soc2.disclaimer.toLowerCase()).not.toContain("we issue soc 2");
+    expect(soc2.disclaimer!.toLowerCase()).not.toContain("we issue soc 2");
     expect(pci.disclaimer).toMatch(/does not claim Qualified Security Assessor/i);
     expect(pci.disclaimer).toMatch(/does not guarantee compliance/i);
     expect(nist.disclaimer).toMatch(/not NIST-approved/i);
