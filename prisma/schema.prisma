@@ -44,18 +44,20 @@ enum ProductStatus {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  name         String
-  email        String    @unique
-  passwordHash String
-  role         Role      @default(CONTENT_EDITOR)
-  isActive     Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  lastLoginAt  DateTime?
-  sessions     Session[]
-  resetTokens  PasswordResetToken[]
-  auditLogs    AuditLog[] @relation("AuditActor")
+  id               String    @id @default(cuid())
+  name             String
+  email            String    @unique
+  passwordHash     String
+  role             Role      @default(CONTENT_EDITOR)
+  isActive         Boolean   @default(true)
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  lastLoginAt      DateTime?
+  sessions         Session[]
+  resetTokens      PasswordResetToken[]
+  auditLogs        AuditLog[] @relation("AuditActor")
 
   @@index([email])
   @@index([role])

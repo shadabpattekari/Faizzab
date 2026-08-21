@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
-import { ButtonLink } from "@/components/ui/Button";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { SERVICES } from "@/lib/content/services";
+import { ButtonLink } from "@/components/ui/Button";
+import { getPublishedServices } from "@/lib/content/loaders";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Services",
-  description:
-    "Explore FaizZab consulting services across ISO management systems, GRC, AI governance, privacy, cybersecurity, audit, risk and continuity.",
-  alternates: { canonical: "/services" },
-};
+export const dynamic = "force-dynamic";
 
-export default function ServicesPage() {
-  const orderedServices = [...SERVICES].sort((a, b) => a.sortOrder - b.sortOrder);
-  const featured = orderedServices.find((service) => service.isFeatured)!;
-  const remaining = orderedServices.filter((service) => !service.isFeatured);
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    path: "/services",
+    title: "Services",
+    description:
+      "Practical FaizZab consulting services across ISO management systems, GRC, privacy, AI governance, audit and risk.",
+  });
+}
+
+export default async function ServicesPage() {
+  const orderedServices = await getPublishedServices();
+  const featured = orderedServices.find((service) => service.isFeatured);
 
   return (
     <>
@@ -24,55 +28,51 @@ export default function ServicesPage() {
           <div className="[&_a]:text-slate-200 [&_span]:text-white">
             <Breadcrumbs items={[{ label: "Services" }]} />
           </div>
-          <StatusBadge status="AVAILABLE_NOW" />
-          <h1 className="mt-5 font-display text-4xl font-bold sm:text-5xl">
-            Consulting for practical implementation and evidence
-          </h1>
+          <h1 className="mt-4 font-display text-4xl font-bold sm:text-5xl">Services</h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
-            FaizZab supports organizations in building governance and assurance practices that
-            are proportionate, operable and ready to demonstrate through useful evidence.
+            Practical consulting and implementation support designed to move organizations from
+            compliance intent to operable controls and usable evidence.
           </p>
-          <ButtonLink href="/contact" className="mt-8" size="lg">
-            Request a Consultation
-          </ButtonLink>
         </div>
       </section>
 
-      <section className="section-alt border-b border-slate-200">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-wider text-teal-700">
-            Featured service
-          </p>
-          <div className="mt-5 grid gap-8 rounded-xl border border-teal-200 bg-white p-7 shadow-sm lg:grid-cols-[1fr_auto] lg:items-center">
+      {featured ? (
+        <section className="border-b border-slate-200 bg-white">
+          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
             <div>
               <StatusBadge status={featured.status} />
-              <h2 className="mt-5 font-display text-3xl font-bold text-navy-950">
+              <p className="mt-4 text-sm font-semibold uppercase tracking-wider text-teal-700">
+                Featured packaged service
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-bold text-navy-950">
                 {featured.title}
               </h2>
-              <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">
+              <p className="mt-4 max-w-2xl leading-7 text-slate-600">
                 {featured.shortDescription}
               </p>
+              <ButtonLink href={`/services/${featured.slug}`} className="mt-7">
+                {featured.ctaLabel || "Request a Readiness Assessment"}
+              </ButtonLink>
             </div>
-            <ButtonLink href={`/services/${featured.slug}`}>
-              Request a Readiness Assessment
-            </ButtonLink>
+            <div className="rounded-xl bg-navy-950 p-7 text-white">
+              <h3 className="font-display text-xl font-bold">What you receive</h3>
+              <ul className="mt-5 space-y-3 text-sm leading-6 text-slate-200">
+                {(featured.deliverables || []).slice(0, 5).map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-        <h2 className="font-display text-3xl font-bold text-navy-950">
-          Consulting capability areas
-        </h2>
-        <p className="mt-3 max-w-3xl leading-7 text-slate-600">
-          Each engagement is scoped around the organization&apos;s context, priorities and
-          intended outcome.
-        </p>
+        <h2 className="font-display text-3xl font-bold text-navy-950">All service areas</h2>
         <div className="mt-9 grid gap-5 md:grid-cols-2">
-          {remaining.map((service) => (
+          {orderedServices.map((service) => (
             <article
               key={service.slug}
-              className="flex flex-col rounded-xl border border-slate-200 bg-white p-6 transition hover:border-teal-600"
+              className="flex flex-col rounded-xl border border-slate-200 bg-white p-6"
             >
               <StatusBadge status={service.status} className="self-start" />
               <h3 className="mt-5 font-display text-2xl font-bold text-navy-950">
@@ -83,7 +83,7 @@ export default function ServicesPage() {
                 href={`/services/${service.slug}`}
                 className="mt-5 font-semibold text-teal-700 hover:text-teal-800"
               >
-                Explore service <span aria-hidden="true">→</span>
+                View service <span aria-hidden="true">→</span>
               </Link>
             </article>
           ))}

@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { FaqList } from "@/components/content/FaqList";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { COMPANY } from "@/lib/company";
+import { getPublishedFaqs, getPublicSiteSettings } from "@/lib/content/loaders";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description:
-    "Contact FaizZab to discuss practical governance, risk, compliance and implementation support.",
-  alternates: { canonical: "/contact" },
-};
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    path: "/contact",
+    title: "Contact",
+    description:
+      "Contact FaizZab to discuss practical governance, risk, compliance and implementation support.",
+  });
+}
 
 const contactFields = [
   { name: "name", label: "Name", required: true },
@@ -26,13 +33,21 @@ const contactFields = [
   },
   {
     name: "privacyAccepted",
-    label: "I acknowledge the Privacy Policy and agree that FaizZab may contact me about this enquiry.",
+    label:
+      "I acknowledge the Privacy Policy and agree that FaizZab may contact me about this enquiry.",
     type: "checkbox" as const,
     required: true,
   },
 ];
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const [{ contactInfo }, faqs] = await Promise.all([
+    getPublicSiteSettings(),
+    getPublishedFaqs(),
+  ]);
+  const email = contactInfo.email || COMPANY.email;
+  const telephone = contactInfo.telephone || COMPANY.telephone;
+
   return (
     <>
       <section className="hero-surface text-white">
@@ -43,9 +58,7 @@ export default function ContactPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-teal-200">
             Contact
           </p>
-          <h1 className="mt-4 font-display text-4xl font-bold sm:text-5xl">
-            Talk to FaizZab
-          </h1>
+          <h1 className="mt-4 font-display text-4xl font-bold sm:text-5xl">Talk to FaizZab</h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
             Share the governance, risk, compliance or assurance priority you are working through.
           </p>
@@ -67,8 +80,8 @@ export default function ContactPage() {
             <div>
               <dt className="font-semibold text-navy-950">Email</dt>
               <dd className="mt-1">
-                <a className="text-teal-700 hover:text-teal-800" href={`mailto:${COMPANY.email}`}>
-                  {COMPANY.email}
+                <a className="text-teal-700 hover:text-teal-800" href={`mailto:${email}`}>
+                  {email}
                 </a>
               </dd>
             </div>
@@ -77,9 +90,9 @@ export default function ContactPage() {
               <dd className="mt-1">
                 <a
                   className="text-teal-700 hover:text-teal-800"
-                  href={`tel:${COMPANY.telephone.replace(/\s/g, "")}`}
+                  href={`tel:${telephone.replace(/\s/g, "")}`}
                 >
-                  {COMPANY.telephoneDisplay}
+                  {telephone}
                 </a>
               </dd>
             </div>
@@ -97,9 +110,7 @@ export default function ContactPage() {
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <h2 className="font-display text-3xl font-bold text-navy-950">
-            Send an enquiry
-          </h2>
+          <h2 className="font-display text-3xl font-bold text-navy-950">Send an enquiry</h2>
           <p className="mt-3 mb-7 leading-7 text-slate-600">
             Provide enough context for us to route and respond to your request.
           </p>
@@ -120,6 +131,10 @@ export default function ContactPage() {
           />
         </div>
       </section>
+
+      <div className="border-t border-slate-200 bg-slate-50">
+        <FaqList faqs={faqs} />
+      </div>
     </>
   );
 }

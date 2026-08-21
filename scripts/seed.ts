@@ -94,7 +94,7 @@ async function seedProducts() {
       contents: json(TOOLKIT_PRODUCT.contents),
       licenceSummary: TOOLKIT_PRODUCT.licenceSummary,
       disclaimer: TOOLKIT_PRODUCT.disclaimer,
-      ctaLabel: "Join the launch list",
+      ctaLabel: "Join Toolkit Launch List",
       seoTitle: TOOLKIT_PRODUCT.seoTitle,
       seoDescription: TOOLKIT_PRODUCT.seoDescription,
       publishStatus: "PUBLISHED",
@@ -103,14 +103,11 @@ async function seedProducts() {
       title: TOOLKIT_PRODUCT.title,
       subtitle: TOOLKIT_PRODUCT.subtitle,
       description: TOOLKIT_PRODUCT.description,
-      status: TOOLKIT_PRODUCT.status,
       contents: json(TOOLKIT_PRODUCT.contents),
       licenceSummary: TOOLKIT_PRODUCT.licenceSummary,
       disclaimer: TOOLKIT_PRODUCT.disclaimer,
-      ctaLabel: "Join the launch list",
       seoTitle: TOOLKIT_PRODUCT.seoTitle,
       seoDescription: TOOLKIT_PRODUCT.seoDescription,
-      publishStatus: "PUBLISHED",
     },
   });
 

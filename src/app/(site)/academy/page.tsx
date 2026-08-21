@@ -3,41 +3,45 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { ACADEMY_COURSES } from "@/lib/content/products";
+import { getPublishedCourses } from "@/lib/content/loaders";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Academy — Coming Soon",
-  description:
-    "FaizZab Academy is coming soon with practical learning paths across AI governance, privacy, ISO 27001 and GRC.",
-  alternates: { canonical: "/academy" },
-};
+export const dynamic = "force-dynamic";
 
-const academyFields = [
-  { name: "name", label: "Name", required: true },
-  { name: "email", label: "Email", type: "email" as const, required: true },
-  { name: "company", label: "Organization" },
-  { name: "jobTitle", label: "Job title" },
-  {
-    name: "courseInterest",
-    label: "Course of interest",
-    type: "select" as const,
-    required: true,
-    options: ACADEMY_COURSES.map((course) => ({
-      value: course.title,
-      label: course.title,
-    })),
-  },
-  { name: "country", label: "Country" },
-  {
-    name: "privacyAccepted",
-    label: "I have read and accept the Privacy Policy.",
-    type: "checkbox" as const,
-    required: true,
-  },
-];
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata({
+    path: "/academy",
+    title: "Academy — Coming Soon",
+    description:
+      "FaizZab Academy is coming soon with practical learning paths across AI governance, privacy, ISO 27001 and GRC.",
+  });
+}
 
-export default function AcademyPage() {
-  const courses = [...ACADEMY_COURSES].sort((a, b) => a.sortOrder - b.sortOrder);
+export default async function AcademyPage() {
+  const courses = await getPublishedCourses();
+  const academyFields = [
+    { name: "name", label: "Name", required: true },
+    { name: "email", label: "Email", type: "email" as const, required: true },
+    { name: "company", label: "Organization" },
+    { name: "jobTitle", label: "Job title" },
+    {
+      name: "courseInterest",
+      label: "Course of interest",
+      type: "select" as const,
+      required: true,
+      options: courses.map((course) => ({
+        value: course.title,
+        label: course.title,
+      })),
+    },
+    { name: "country", label: "Country" },
+    {
+      name: "privacyAccepted",
+      label: "I have read and accept the Privacy Policy.",
+      type: "checkbox" as const,
+      required: true,
+    },
+  ];
 
   return (
     <>
