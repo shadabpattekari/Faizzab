@@ -1,14 +1,37 @@
 # QA Checklist — FaizZab Website
 
-## Commands
+## Final pipeline (reproducible)
 
 ```bash
-npm install
-npm run lint
+npm ci
+npx prisma generate
+npx prisma validate
 npm run typecheck
-npm test
+npm run lint
+npm run test
 npm run build
+npm audit
 ```
+
+Production database apply:
+
+```bash
+npx prisma migrate deploy
+# or
+npm run db:migrate
+```
+
+Do not use `prisma db push` in production.
+
+## Security checks (final)
+
+- [ ] JSON-LD uses `safeJsonLd` (no raw `JSON.stringify` in script tags)
+- [ ] Login failures return the same generic 401 message
+- [ ] Admin login rate limiter fails closed on subsystem errors
+- [ ] Account lockout after 5 failures (~15 minutes)
+- [ ] IP rate limiting still active
+- [ ] Production CSP has no `unsafe-eval`
+- [ ] `npm audit` reviewed after lockfile changes
 
 ## Public pages
 

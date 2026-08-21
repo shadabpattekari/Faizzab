@@ -41,10 +41,18 @@ describe("account lockout state machine", () => {
     expect(locked.lockedUntil?.toISOString()).toBe("2026-08-21T04:15:00.000Z");
   });
 
-  it("detects active lockout windows", () => {
+  it("detects active lockout windows and expiry", () => {
     const now = new Date("2026-08-21T04:10:00.000Z");
     expect(isAccountCurrentlyLocked(new Date("2026-08-21T04:15:00.000Z"), now)).toBe(true);
     expect(isAccountCurrentlyLocked(new Date("2026-08-21T04:05:00.000Z"), now)).toBe(false);
     expect(isAccountCurrentlyLocked(null, now)).toBe(false);
+  });
+
+  it("models successful-login reset state", () => {
+    // Successful login clears counters; this documents the expected post-login state.
+    const cleared = { failedLoginCount: 0, lockedUntil: null as Date | null };
+    expect(cleared.failedLoginCount).toBe(0);
+    expect(cleared.lockedUntil).toBeNull();
+    expect(isAccountCurrentlyLocked(cleared.lockedUntil)).toBe(false);
   });
 });

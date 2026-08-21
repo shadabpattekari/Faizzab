@@ -22,23 +22,58 @@ export const LEAD_STATUSES = [
 
 export class AdminInputError extends Error {}
 
+type OriginRequestLike = {
+  method: string;
+  headers: { get(name: string): string | null };
+  nextUrl: { origin: string };
+};
+
+/**
+ * Same-origin check for browser-initiated Admin mutations.
+ * GET/HEAD may omit Origin; state-changing methods must present a matching Origin.
+ */
+export function validateAdminRequestOrigin(request: OriginRequestLike): "ok" | "invalid_origin" {
+  const method = request.method.toUpperCase();
+  const isMutation = !["GET", "HEAD", "OPTIONS"].includes(method);
+  const origin = request.headers.get("origin");
+
+  if (!isMutation) {
+    if (origin && origin !== request.nextUrl.origin) return "invalid_origin";
+    return "ok";
+  }
+
+  if (!origin || origin !== request.nextUrl.origin) {
+    return "invalid_origin";
+  }
+  return "ok";
+}
+
+export function evaluateAdminAccess(
+  user: SessionUser | null,
+  options: { superAdminOnly?: boolean } = {}
+): "ok" | "unauthorized" | "forbidden" {
+  if (!user) return "unauthorized";
+  if (options.superAdminOnly && !isSuperAdmin(user)) return "forbidden";
+  return "ok";
+}
+
 export async function authorizeAdmin(
   request: NextRequest,
   options: { superAdminOnly?: boolean } = {}
 ): Promise<SessionUser | NextResponse> {
-  const origin = request.headers.get("origin");
-  if (origin && origin !== request.nextUrl.origin) {
+  if (validateAdminRequestOrigin(request) !== "ok") {
     return NextResponse.json({ ok: false, error: "Invalid request origin." }, { status: 403 });
   }
 
   const user = await getSessionUser();
-  if (!user) {
+  const access = evaluateAdminAccess(user, options);
+  if (access === "unauthorized") {
     return NextResponse.json({ ok: false, error: "Unauthorized." }, { status: 401 });
   }
-  if (options.superAdminOnly && !isSuperAdmin(user)) {
+  if (access === "forbidden") {
     return NextResponse.json({ ok: false, error: "Forbidden." }, { status: 403 });
   }
-  return user;
+  return user as SessionUser;
 }
 
 export function isAuthError(value: SessionUser | NextResponse): value is NextResponse {
