@@ -7,25 +7,34 @@ import { LeadForm } from "@/components/forms/LeadForm";
 import { ButtonLink } from "@/components/ui/Button";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { COMPANY } from "@/lib/company";
-import { SERVICES, getServiceBySlug, type ServiceContent } from "@/lib/content/services";
+import {
+  getPublishedServiceBySlug,
+  getPublishedServices,
+} from "@/lib/content/loaders";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import type { ServiceContent } from "@/lib/content/services";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return SERVICES.map((service) => ({ slug: service.slug }));
+export const dynamic = "force-dynamic";
+
+export async function generateStaticParams() {
+  const services = await getPublishedServices();
+  return services.map((service) => ({ slug: service.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const service = getServiceBySlug((await params).slug);
+  const slug = (await params).slug;
+  const service = await getPublishedServiceBySlug(slug);
   if (!service) return {};
 
-  return {
+  return buildPageMetadata({
+    path: `/services/${service.slug}`,
     title: service.seoTitle,
     description: service.seoDescription,
-    alternates: { canonical: `/services/${service.slug}` },
-  };
+  });
 }
 
 const readinessFields = [
@@ -306,7 +315,7 @@ function StandardServicePage({ service }: { service: ServiceContent }) {
 }
 
 export default async function ServicePage({ params }: PageProps) {
-  const service = getServiceBySlug((await params).slug);
+  const service = await getPublishedServiceBySlug((await params).slug);
   if (!service) notFound();
 
   const url = `${COMPANY.url}/services/${service.slug}`;

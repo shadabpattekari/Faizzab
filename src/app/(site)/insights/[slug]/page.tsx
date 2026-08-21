@@ -4,6 +4,7 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { COMPANY } from "@/lib/company";
 import { prisma } from "@/lib/db/prisma";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-dynamic";
 
@@ -32,11 +33,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  return {
+  return buildPageMetadata({
+    path: `/insights/${insight.slug}`,
     title: insight.seoTitle || insight.title,
     description: insight.seoDescription || insight.excerpt,
-    alternates: { canonical: `/insights/${insight.slug}` },
-  };
+  });
 }
 
 export default async function InsightPage({ params }: PageProps) {

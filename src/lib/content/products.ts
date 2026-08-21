@@ -181,7 +181,7 @@ export const TOOLKIT_PRODUCT = {
   subtitle: "Practical starter registers and workbooks for ISMS and GRC foundations",
   description: `The FaizZab ISO 27001 GRC Starter Toolkit — Edition 2026 is designed to help organizations begin structured information-security and GRC documentation work with practical, adaptable templates.
 
-Initial status: COMING SOON. Join the launch list to be notified when the toolkit becomes available for purchase request. Online payment is not offered in this phase; purchase requests will be handled through a guided commercial process when the product is released.
+Initial status: COMING SOON. Join Toolkit Launch List to be notified when the toolkit becomes available for purchase request. Online payment is not offered in this phase; purchase requests will be handled through a guided commercial process when the product is released.
 
 Licence positioning: Single Legal Entity Internal-Use Licence. Final licence wording will be flagged for qualified legal review before commercial release.`,
   status: BUSINESS_STATUS.toolkit.key as "COMING_SOON" | "AVAILABLE_NOW" | "IN_DEVELOPMENT",
@@ -213,7 +213,7 @@ Final licence wording is flagged for qualified legal review before commercial re
   disclaimer: `This toolkit provides practical starter documentation aids. It does not reproduce copyrighted ISO standard text. It is not a certification, accreditation, or legal advice product. Use of the toolkit does not guarantee ISO certification or audit outcomes. Content should be adapted to your organization's context by competent professionals.`,
   seoTitle: "ISO 27001 GRC Starter Toolkit 2026 | FaizZab",
   seoDescription:
-    "FaizZab ISO 27001 GRC Starter Toolkit — Edition 2026. Coming soon. Join the launch list.",
+    "FaizZab ISO 27001 GRC Starter Toolkit — Edition 2026. Coming soon. Join Toolkit Launch List.",
 } as const;
 
 export const GRC_PLATFORM = {

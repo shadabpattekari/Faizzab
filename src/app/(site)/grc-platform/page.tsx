@@ -3,13 +3,19 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { GRC_PLATFORM } from "@/lib/content/products";
+import { getGrcPlatformContent } from "@/lib/content/loaders";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: GRC_PLATFORM.seoTitle,
-  description: GRC_PLATFORM.seoDescription,
-  alternates: { canonical: "/grc-platform" },
-};
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const platform = await getGrcPlatformContent();
+  return buildPageMetadata({
+    path: "/grc-platform",
+    title: platform.seoTitle || platform.title,
+    description: platform.seoDescription || platform.summary,
+  });
+}
 
 const platformFields = [
   { name: "name", label: "Name", required: true },
@@ -50,7 +56,9 @@ const platformFields = [
   },
 ];
 
-export default function GrcPlatformPage() {
+export default async function GrcPlatformPage() {
+  const platform = await getGrcPlatformContent();
+
   return (
     <>
       <section className="hero-surface text-white">
@@ -58,13 +66,9 @@ export default function GrcPlatformPage() {
           <div className="[&_a]:text-slate-200 [&_span]:text-white">
             <Breadcrumbs items={[{ label: "GRC Platform" }]} />
           </div>
-          <StatusBadge status={GRC_PLATFORM.status} />
-          <h1 className="mt-5 font-display text-4xl font-bold sm:text-5xl">
-            {GRC_PLATFORM.title}
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
-            {GRC_PLATFORM.summary}
-          </p>
+          <StatusBadge status={platform.status} />
+          <h1 className="mt-5 font-display text-4xl font-bold sm:text-5xl">{platform.title}</h1>
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">{platform.summary}</p>
           <a
             href="#register-interest"
             className="mt-8 inline-flex rounded-md bg-teal-700 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-teal-800"
@@ -80,14 +84,14 @@ export default function GrcPlatformPage() {
             Intended product direction
           </h2>
           <div className="mt-5 space-y-5 text-lg leading-8 text-slate-600">
-            {GRC_PLATFORM.description.split("\n\n").map((paragraph) => (
+            {platform.description.split("\n\n").map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
         </div>
         <aside className="rounded-xl border border-slate-200 bg-white p-7 shadow-sm">
           <h2 className="font-display text-2xl font-bold text-navy-950">Current status</h2>
-          <StatusBadge status={GRC_PLATFORM.status} className="mt-5" />
+          <StatusBadge status={platform.status} className="mt-5" />
           <p className="mt-4 leading-7 text-slate-600">
             The platform is not available for use today. No production functionality, service
             level or release date is being represented on this page.
@@ -101,7 +105,7 @@ export default function GrcPlatformPage() {
             Areas being considered
           </h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {GRC_PLATFORM.features.map((feature) => (
+            {platform.features.map((feature) => (
               <div key={feature} className="rounded-lg border border-slate-200 bg-white p-5">
                 <p className="font-semibold text-navy-950">{feature}</p>
               </div>
@@ -116,7 +120,7 @@ export default function GrcPlatformPage() {
       <section id="register-interest" className="scroll-mt-24">
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
           <div>
-            <StatusBadge status={GRC_PLATFORM.status} />
+            <StatusBadge status={platform.status} />
             <h2 className="mt-4 font-display text-3xl font-bold text-navy-950">
               Register Interest
             </h2>

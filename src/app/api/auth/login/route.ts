@@ -12,6 +12,10 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/utils";
 
 const SESSION_SECONDS = 7 * 24 * 60 * 60;
+const MAX_FAILED_ATTEMPTS = 5;
+const LOCKOUT_MS = 15 * 60 * 1000;
+const GENERIC_AUTH_ERROR = "Invalid email or password.";
+const GENERIC_LOCK_ERROR = "Unable to sign in. Please try again later.";
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request.headers) || "unknown";
@@ -37,7 +41,7 @@ export async function POST(request: NextRequest) {
 
   const parsed = loginSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ ok: false, error: "Invalid email or password." }, { status: 400 });
+    return NextResponse.json({ ok: false, error: GENERIC_AUTH_ERROR }, { status: 400 });
   }
 
   const email = parsed.data.email.toLowerCase();
@@ -50,19 +54,50 @@ export async function POST(request: NextRequest) {
       ipAddress: ip,
       metadata: { reason: "user_not_found_or_inactive" },
     });
-    return NextResponse.json({ ok: false, error: "Invalid email or password." }, { status: 401 });
+    return NextResponse.json({ ok: false, error: GENERIC_AUTH_ERROR }, { status: 401 });
+  }
+
+  if (user.lockedUntil && user.lockedUntil > new Date()) {
+    await writeAuditLog({
+      action: "login_blocked_locked",
+      actorId: user.id,
+      actorEmail: user.email,
+      ipAddress: ip,
+      metadata: { lockedUntil: user.lockedUntil.toISOString() },
+    });
+    return NextResponse.json({ ok: false, error: GENERIC_LOCK_ERROR }, { status: 423 });
   }
 
   const valid = await verifyPassword(parsed.data.password, user.passwordHash);
   if (!valid) {
+    const nextCount = user.failedLoginCount + 1;
+    const shouldLock = nextCount >= MAX_FAILED_ATTEMPTS;
+    const lockedUntil = shouldLock ? new Date(Date.now() + LOCKOUT_MS) : null;
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        failedLoginCount: shouldLock ? 0 : nextCount,
+        lockedUntil,
+      },
+    });
+
     await writeAuditLog({
-      action: "login_failed",
+      action: shouldLock ? "login_lockout" : "login_failed",
       actorId: user.id,
       actorEmail: user.email,
       ipAddress: ip,
-      metadata: { reason: "bad_password" },
+      metadata: {
+        reason: "bad_password",
+        failedLoginCount: nextCount,
+        locked: shouldLock,
+      },
     });
-    return NextResponse.json({ ok: false, error: "Invalid email or password." }, { status: 401 });
+
+    return NextResponse.json(
+      { ok: false, error: shouldLock ? GENERIC_LOCK_ERROR : GENERIC_AUTH_ERROR },
+      { status: shouldLock ? 423 : 401 }
+    );
   }
 
   const token = await createSession(user.id, {
@@ -72,7 +107,11 @@ export async function POST(request: NextRequest) {
 
   await prisma.user.update({
     where: { id: user.id },
-    data: { lastLoginAt: new Date() },
+    data: {
+      lastLoginAt: new Date(),
+      failedLoginCount: 0,
+      lockedUntil: null,
+    },
   });
 
   await writeAuditLog({

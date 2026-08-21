@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   // Hostinger Node hosting compatible — avoid forcing Docker/Vercel-only features
   output: "standalone",
   async headers() {
+    const scriptSrc = isProd
+      ? "script-src 'self' 'unsafe-inline'"
+      : "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+
     const csp = [
       "default-src 'self'",
       "base-uri 'self'",
@@ -16,7 +20,7 @@ const nextConfig: NextConfig = {
       "img-src 'self' data: blob: https:",
       "font-src 'self' data: https://fonts.gstatic.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      scriptSrc,
       "connect-src 'self'",
       "object-src 'none'",
       "upgrade-insecure-requests",
@@ -46,9 +50,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/admin/:path*",
-        headers: [
-          { key: "X-Robots-Tag", value: "noindex, nofollow" },
-        ],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
     ];
   },

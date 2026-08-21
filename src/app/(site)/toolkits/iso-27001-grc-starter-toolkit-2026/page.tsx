@@ -1,17 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { COMPANY } from "@/lib/company";
-import { TOOLKIT_PRODUCT } from "@/lib/content/products";
+import { getPublishedToolkitBySlug, toolkitCtaLabel } from "@/lib/content/loaders";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: TOOLKIT_PRODUCT.seoTitle,
-  description: TOOLKIT_PRODUCT.seoDescription,
-  alternates: { canonical: `/toolkits/${TOOLKIT_PRODUCT.slug}` },
-};
+export const dynamic = "force-dynamic";
+
+const SLUG = "iso-27001-grc-starter-toolkit-2026";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const toolkit = await getPublishedToolkitBySlug(SLUG);
+  if (!toolkit) return {};
+  return buildPageMetadata({
+    path: `/toolkits/${toolkit.slug}`,
+    title: toolkit.seoTitle || toolkit.title,
+    description: toolkit.seoDescription || toolkit.subtitle || undefined,
+  });
+}
 
 const toolkitFields = [
   { name: "name", label: "Name", required: true },
@@ -31,12 +41,16 @@ const toolkitFields = [
   },
 ];
 
-export default function ToolkitProductPage() {
-  const ctaLabel =
-    TOOLKIT_PRODUCT.status === "AVAILABLE_NOW"
-      ? "Request to Purchase"
-      : "Join Toolkit Launch List";
-  const url = `${COMPANY.url}/toolkits/${TOOLKIT_PRODUCT.slug}`;
+export default async function ToolkitProductPage() {
+  const toolkit = await getPublishedToolkitBySlug(SLUG);
+  if (!toolkit) notFound();
+
+  const ctaLabel = toolkitCtaLabel(toolkit.status);
+  const url = `${COMPANY.url}/toolkits/${toolkit.slug}`;
+  const formIntro =
+    toolkit.status === "AVAILABLE_NOW"
+      ? "Request a guided toolkit purchase process. Online payment is not offered in this phase."
+      : "The toolkit is coming soon. Register your interest to receive release and guided purchase-process updates.";
 
   return (
     <>
@@ -44,26 +58,21 @@ export default function ToolkitProductPage() {
         items={[
           { name: "Home", item: COMPANY.url },
           { name: "Toolkits", item: `${COMPANY.url}/toolkits` },
-          { name: TOOLKIT_PRODUCT.title, item: url },
+          { name: toolkit.title, item: url },
         ]}
       />
       <section className="hero-surface text-white">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="[&_a]:text-slate-200 [&_span]:text-white">
             <Breadcrumbs
-              items={[
-                { label: "Toolkits", href: "/toolkits" },
-                { label: TOOLKIT_PRODUCT.title },
-              ]}
+              items={[{ label: "Toolkits", href: "/toolkits" }, { label: toolkit.title }]}
             />
           </div>
-          <StatusBadge status={TOOLKIT_PRODUCT.status} />
+          <StatusBadge status={toolkit.status} />
           <h1 className="mt-5 max-w-5xl font-display text-4xl font-bold sm:text-5xl">
-            {TOOLKIT_PRODUCT.title}
+            {toolkit.title}
           </h1>
-          <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
-            {TOOLKIT_PRODUCT.subtitle}
-          </p>
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">{toolkit.subtitle}</p>
           <a
             href="#toolkit-interest"
             className="mt-8 inline-flex rounded-md bg-teal-700 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-teal-800"
@@ -78,7 +87,7 @@ export default function ToolkitProductPage() {
           A practical starting point
         </h2>
         <div className="mt-5 max-w-4xl space-y-5 text-lg leading-8 text-slate-600">
-          {TOOLKIT_PRODUCT.description.split("\n\n").map((paragraph) => (
+          {toolkit.description.split("\n\n").map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
@@ -90,10 +99,12 @@ export default function ToolkitProductPage() {
             Planned toolkit contents
           </h2>
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {TOOLKIT_PRODUCT.contents.map((item) => (
+            {toolkit.contents.map((item) => (
               <div key={item} className="rounded-lg border border-slate-200 bg-white p-4">
                 <p className="flex gap-3 text-sm font-semibold leading-6 text-navy-950">
-                  <span className="text-teal-700" aria-hidden="true">✓</span>
+                  <span className="text-teal-700" aria-hidden="true">
+                    ✓
+                  </span>
                   {item}
                 </p>
               </div>
@@ -106,7 +117,7 @@ export default function ToolkitProductPage() {
         <article className="rounded-xl border border-slate-200 bg-white p-7">
           <h2 className="font-display text-2xl font-bold text-navy-950">Licence summary</h2>
           <div className="mt-5 space-y-4 leading-7 text-slate-600">
-            {TOOLKIT_PRODUCT.licenceSummary.split("\n\n").map((paragraph) => (
+            {(toolkit.licenceSummary || "").split("\n\n").map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
@@ -115,7 +126,7 @@ export default function ToolkitProductPage() {
           <h2 className="font-display text-2xl font-bold text-amber-950">
             Important disclaimer
           </h2>
-          <p className="mt-5 leading-7 text-amber-900">{TOOLKIT_PRODUCT.disclaimer}</p>
+          <p className="mt-5 leading-7 text-amber-900">{toolkit.disclaimer}</p>
         </article>
       </section>
 
@@ -132,12 +143,9 @@ export default function ToolkitProductPage() {
       <section id="toolkit-interest" className="scroll-mt-24">
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
           <div>
-            <StatusBadge status={TOOLKIT_PRODUCT.status} />
+            <StatusBadge status={toolkit.status} />
             <h2 className="mt-4 font-display text-3xl font-bold text-navy-950">{ctaLabel}</h2>
-            <p className="mt-4 leading-7 text-slate-600">
-              The toolkit is coming soon. Register your interest to receive release and guided
-              purchase-process updates.
-            </p>
+            <p className="mt-4 leading-7 text-slate-600">{formIntro}</p>
           </div>
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <LeadForm
