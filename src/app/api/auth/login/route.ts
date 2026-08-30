@@ -11,6 +11,7 @@ import { loginSchema } from "@/lib/validation/forms";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getClientIp } from "@/lib/utils";
 import {
+  GENERIC_LOGIN_FAILURE_MESSAGE,
   authFailureJson,
   isAccountCurrentlyLocked,
   nextFailedLoginState,
@@ -30,15 +31,26 @@ export async function POST(request: NextRequest) {
     key: `admin-login:${ip}`,
     limit: 10,
     windowMs: 15 * 60 * 1000,
+    failClosed: true,
   });
 
   if (!rate.allowed) {
     await writeAuditLog({
       action: "login_failed",
       ipAddress: ip,
-      metadata: { reason: "RATE_LIMITED" satisfies LoginAuditReason },
+      metadata: {
+        reason: "RATE_LIMITED" satisfies LoginAuditReason,
+        unavailable: Boolean(rate.unavailable),
+      },
     });
-    // IP abuse control remains distinct from account-state authentication failures.
+    // Do not disclose whether this was quota exhaustion vs rate-limit subsystem failure.
+    // Keep authentication failures generic to the browser.
+    if (rate.unavailable) {
+      return NextResponse.json(
+        { ok: false, error: GENERIC_LOGIN_FAILURE_MESSAGE },
+        { status: 401 }
+      );
+    }
     return NextResponse.json(
       { ok: false, error: "Too many login attempts. Please try again later." },
       { status: 429 }

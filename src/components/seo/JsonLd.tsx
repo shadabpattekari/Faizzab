@@ -1,4 +1,14 @@
 import { COMPANY } from "@/lib/company";
+import { safeJsonLd } from "@/lib/seo/safe-json-ld";
+
+function JsonLdScript({ data }: { data: unknown }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(data) }}
+    />
+  );
+}
 
 export function OrganizationJsonLd() {
   const data = {
@@ -20,12 +30,7 @@ export function OrganizationJsonLd() {
     },
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
+  return <JsonLdScript data={data} />;
 }
 
 export function WebSiteJsonLd() {
@@ -40,12 +45,7 @@ export function WebSiteJsonLd() {
     },
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
+  return <JsonLdScript data={data} />;
 }
 
 export function ServiceJsonLd({
@@ -71,12 +71,7 @@ export function ServiceJsonLd({
     areaServed: "IN",
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
+  return <JsonLdScript data={data} />;
 }
 
 export function ArticleJsonLd({
@@ -111,12 +106,7 @@ export function ArticleJsonLd({
     },
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
+  return <JsonLdScript data={data} />;
 }
 
 export function BreadcrumbJsonLd({
@@ -135,10 +125,5 @@ export function BreadcrumbJsonLd({
     })),
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
+  return <JsonLdScript data={data} />;
 }
