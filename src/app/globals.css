@@ -13,6 +13,9 @@
   --teal-600: #0f766e;
   --teal-700: #0d5f59;
   --teal-800: #0a4a45;
+  /* Final logo colours: accents only (logo teal is too light for text on white). */
+  --brand-teal: #00a19e;
+  --brand-gold: #d9a335;
   --background: #f7f9fc;
   --foreground: #0f1f33;
   --surface: #ffffff;
@@ -34,6 +37,8 @@
   --color-teal-600: var(--teal-600);
   --color-teal-700: var(--teal-700);
   --color-teal-800: var(--teal-800);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-gold: var(--brand-gold);
   --font-sans: var(--font-source-sans);
   --font-display: var(--font-libre);
 }

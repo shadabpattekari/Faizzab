@@ -1,0 +1,67 @@
+# Checks on every push and pull request. A red ✗ means don't merge yet.
+name: Checks
+
+on:
+  push:
+    branches-ignore: [qa-screenshots]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  preview:
+    name: Screenshots for review (claude/* branches)
+    if: github.event_name == 'push' && startsWith(github.ref_name, 'claude/')
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      APP_URL: http://localhost:3000
+      SESSION_SECRET: preview-only-not-a-real-secret-0123456789abcdef
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Start the site (no database: pages use their built-in content)
+        run: |
+          (npm run start > /tmp/server.log 2>&1 &)
+          for i in $(seq 1 60); do curl -sf http://localhost:3000 >/dev/null && break; sleep 2; done
+      - name: Screenshots at 1440, 1280, 768 and 375 px
+        run: |
+          npm i --no-save playwright@1.64.1
+          npx playwright install --with-deps chromium
+          node .github/scripts/screenshots.mjs http://localhost:3000 /tmp/shots / /academy /academy/iso-27001-practical-implementer /contact
+      - name: Publish to the qa-screenshots branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: .github/scripts/publish-screenshots.sh /tmp/shots "website/${GITHUB_REF_NAME//\//-}"
