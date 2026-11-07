@@ -52,7 +52,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - name: Start the site (no database: pages use their built-in content)
+      - name: "Start the site (no database: pages use their built-in content)"
         run: |
           (npm run start > /tmp/server.log 2>&1 &)
           for i in $(seq 1 60); do curl -sf http://localhost:3000 >/dev/null && break; sleep 2; done
