@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { academyCourseBadge } from "@/lib/content/products";
 import { getPublishedCourses } from "@/lib/content/loaders";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
@@ -53,7 +54,7 @@ export default async function AcademyPage() {
           <div className="[&_a]:text-slate-200 [&_span]:text-white">
             <Breadcrumbs items={[{ label: "Academy" }]} />
           </div>
-          <StatusBadge status="COMING_SOON" />
+          <StatusBadge label="ENROLLING SOON" status="COMING_SOON" />
           <h1 className="mt-5 font-display text-4xl font-bold sm:text-5xl">FaizZab Academy</h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
             Practitioner learning that turns governance and compliance concepts into real
@@ -96,7 +97,11 @@ export default async function AcademyPage() {
               key={course.slug}
               className="flex flex-col rounded-xl border border-slate-200 bg-white p-6"
             >
-              <StatusBadge status={course.status} className="self-start" />
+              <StatusBadge
+                className="self-start"
+                label={academyCourseBadge(course.slug)}
+                status={course.status}
+              />
               <h3 className="mt-5 font-display text-2xl font-bold text-navy-950">
                 {course.title}
               </h3>
@@ -163,7 +168,7 @@ export default async function AcademyPage() {
       <section id="launch-list" className="scroll-mt-24">
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
           <div>
-            <StatusBadge status="COMING_SOON" />
+            <StatusBadge label="ENROLLING SOON" status="COMING_SOON" />
             <h2 className="mt-4 font-display text-3xl font-bold text-navy-950">
               Join the Academy launch list
             </h2>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { FaqList } from "@/components/content/FaqList";
 import { LeadForm } from "@/components/forms/LeadForm";
-import { COMPANY } from "@/lib/company";
+import { COMPANY, ENQUIRY_SUBJECTS } from "@/lib/company";
 import {
   CONSULTATION_SERVICE_INTERESTS,
   interestLabelForSlug,
@@ -31,13 +31,20 @@ const contactFields = [
   { name: "email", label: "Business Email", type: "email" as const, required: true },
   { name: "company", label: "Company (optional)" },
   { name: "telephone", label: "Telephone (optional)", type: "tel" as const },
-  { name: "subject", label: "Subject", required: true },
+  {
+    name: "subject",
+    label: "What is this about?",
+    type: "select" as const,
+    required: true,
+    options: ENQUIRY_SUBJECTS.map((subject) => ({ value: subject, label: subject })),
+  },
   {
     name: "message",
     label: "Message",
     type: "textarea" as const,
     required: true,
     rows: 6,
+    placeholder: "Share your context, timeline and what you want to achieve.",
   },
   {
     name: "privacyAccepted",
@@ -126,6 +133,14 @@ export default async function ContactPage({ searchParams }: PageProps) {
 
       <section className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
         <div>
+          <div className="mb-8 rounded-xl border border-teal-200 bg-teal-50 p-5" data-what-happens-next>
+            <h2 className="font-semibold text-navy-950">What happens next</h2>
+            <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm leading-6 text-slate-700">
+              <li>We reply within one working day.</li>
+              <li>We set up a short call to understand your goal and scope.</li>
+              <li>You get a clear next step: a proposal, an assessment or a learning path.</li>
+            </ol>
+          </div>
           <h2 className="font-display text-3xl font-bold text-navy-950">Company details</h2>
           <dl className="mt-7 space-y-6 text-sm">
             <div>
@@ -156,9 +171,30 @@ export default async function ContactPage({ searchParams }: PageProps) {
               </dd>
             </div>
             <div>
+              <dt className="font-semibold text-navy-950">WhatsApp</dt>
+              <dd className="mt-1">
+                <a
+                  className="text-teal-700 hover:text-teal-800"
+                  href={COMPANY.whatsapp}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Chat on WhatsApp
+                </a>
+              </dd>
+            </div>
+            <div>
               <dt className="font-semibold text-navy-950">Corporate office</dt>
               <dd className="mt-1 leading-6 text-slate-600">
                 {COMPANY.corporateOffice.singleLine}
+                <a
+                  className="mt-1 block font-semibold text-teal-700 hover:text-teal-800"
+                  href={COMPANY.corporateOffice.mapUrl}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Open in Google Maps <span aria-hidden="true">→</span>
+                </a>
               </dd>
             </div>
             <div>
@@ -166,10 +202,6 @@ export default async function ContactPage({ searchParams }: PageProps) {
               <dd className="mt-1 leading-6 text-slate-600">
                 {COMPANY.registeredOffice.singleLine}
               </dd>
-            </div>
-            <div>
-              <dt className="font-semibold text-navy-950">Queries / Grievances</dt>
-              <dd className="mt-1 text-slate-600">{COMPANY.grievances}</dd>
             </div>
           </dl>
         </div>

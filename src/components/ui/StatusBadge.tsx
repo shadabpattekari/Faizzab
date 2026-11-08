@@ -16,9 +16,12 @@ const STYLES: Record<StatusKey, string> = {
 
 export function StatusBadge({
   status,
+  label,
   className,
 }: {
   status: StatusKey | string;
+  /** Optional wording instead of the default, e.g. "ENROLLING SOON" or "PLANNED". */
+  label?: string;
   className?: string;
 }) {
   const key = (status in LABELS ? status : "COMING_SOON") as StatusKey;
@@ -30,7 +33,7 @@ export function StatusBadge({
         className
       )}
     >
-      {LABELS[key]}
+      {label ?? LABELS[key]}
     </span>
   );
 }

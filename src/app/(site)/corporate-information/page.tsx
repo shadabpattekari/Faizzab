@@ -54,7 +54,6 @@ export default function CorporateInformationPage() {
               {COMPANY.telephoneDisplay}
             </a>
           </li>
-          <li>Queries / Grievances: {COMPANY.grievances}</li>
         </ul>
 
         <h2>Website</h2>
