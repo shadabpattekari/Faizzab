@@ -51,7 +51,6 @@ jobs:
           --health-interval=5s --health-timeout=5s --health-retries=20
     env:
       NEXT_TELEMETRY_DISABLED: "1"
-      NODE_ENV: production
       APP_URL: http://localhost:3000
       DATABASE_URL: mysql://root:qa-root-only@127.0.0.1:3306/faizzab_qa
       SESSION_SECRET: qa-only-not-a-real-secret-0123456789abcdef
@@ -65,11 +64,11 @@ jobs:
       - name: Create the test database (same migrations and seed as Hostinger)
         run: |
           npx prisma migrate deploy
-          NODE_ENV=development npm run db:seed
+          npm run db:seed
       - run: npm run build
       - name: Start the site
         run: |
-          (npm run start > /tmp/server.log 2>&1 &)
+          (NODE_ENV=production npm run start > /tmp/server.log 2>&1 &)
           for i in $(seq 1 60); do curl -sf http://localhost:3000 >/dev/null && break; sleep 2; done
       - name: Install the QA tools (not part of the site build)
         run: |
