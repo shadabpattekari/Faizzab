@@ -86,7 +86,7 @@ export default async function HomePage() {
     {
       title: "FaizZab Academy",
       description:
-        "Planned practitioner learning designed around practical exercises, evidence habits and implementation scenarios.",
+        "Practitioner courses and 2, 3 and 6-month GRC internships built on practical labs, module workbooks and real implementation scenarios — starting with ISO/IEC 27001.",
       status: BUSINESS_STATUS.academy.key,
       cta: "Join Launch List",
       href: "/academy",

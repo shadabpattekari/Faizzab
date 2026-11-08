@@ -2,6 +2,37 @@ import { BUSINESS_STATUS } from "@/lib/company";
 
 export const ACADEMY_COURSES = [
   {
+    slug: "iso-27001-practical-implementer",
+    title: "ISO/IEC 27001 Implementation Practitioner",
+    summary:
+      "The flagship FaizZab Academy course: 10 practical modules that take you from ISMS context and scope to certification readiness.",
+    description:
+      "A hands-on practitioner course for implementing an ISO/IEC 27001 information security management system. Ten modules follow the real implementation journey: context and scope, leadership and governance, risk assessment and treatment, support and documented information, operations, Annex A control implementation, monitoring and measurement, internal audit and management review, corrective action, and certification readiness. Each module has short practical lessons, one module workbook with worked examples from several fictional organisations, a module assessment and a reviewed practical lab.",
+    status: BUSINESS_STATUS.academy.key,
+    sortOrder: 0,
+    audience:
+      "Students and graduates starting a GRC career, and information security, IT and compliance professionals who implement or support an ISMS.",
+    outcomes: [
+      "Define ISMS context, interested parties and a defensible scope",
+      "Run a risk assessment with agreed criteria and real treatment plans",
+      "Design and evidence Annex A controls and the Statement of Applicability",
+      "Monitor performance, run internal audits and management reviews",
+      "Manage nonconformities, corrective actions and certification readiness",
+    ],
+    futureFeatures: [
+      "10 modules",
+      "Short practical lessons",
+      "One workbook per module",
+      "Module assessments",
+      "Reviewed practical labs",
+      "Capstone",
+      "Certificate of completion",
+    ],
+    seoTitle: "ISO/IEC 27001 Implementation Practitioner | FaizZab Academy",
+    seoDescription:
+      "FaizZab Academy's practical ISO/IEC 27001 Implementation Practitioner course: 10 modules, module workbooks, reviewed labs and certification readiness.",
+  },
+  {
     slug: "iso-42001-practical-ai-management-system-implementer",
     title: "ISO/IEC 42001 Practical AI Management System Implementer",
     summary:
@@ -112,34 +143,6 @@ export const ACADEMY_COURSES = [
     seoTitle: "ISO/IEC 27701:2025 PIMS Implementer | FaizZab Academy",
     seoDescription:
       "Coming soon: ISO/IEC 27701:2025 practical PIMS implementer course from FaizZab Academy.",
-  },
-  {
-    slug: "iso-27001-practical-implementer",
-    title: "ISO/IEC 27001 Practical Implementer",
-    summary:
-      "A practical implementer path for ISO/IEC 27001 information security management system work.",
-    description:
-      "This upcoming course focuses on practical ISMS implementation — scope, risk, controls readiness, documented information and evidence habits. Full Academy LMS capabilities are planned and not yet live.",
-    status: BUSINESS_STATUS.academy.key,
-    sortOrder: 5,
-    audience: "Information security, GRC and compliance practitioners.",
-    outcomes: [
-      "Plan practical ISMS implementation steps",
-      "Improve evidence readiness discipline",
-      "Prioritize remediation work realistically",
-    ],
-    futureFeatures: [
-      "Lessons",
-      "Simulated organizations",
-      "Evidence packs",
-      "Assignments",
-      "Quizzes",
-      "Capstones",
-      "Certificates",
-    ],
-    seoTitle: "ISO/IEC 27001 Practical Implementer | FaizZab Academy",
-    seoDescription:
-      "Coming soon: ISO/IEC 27001 practical implementer course from FaizZab Academy.",
   },
   {
     slug: "grc-analyst-practitioner",

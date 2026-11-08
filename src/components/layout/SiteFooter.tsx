@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { COMPANY, FOOTER_LEGAL, NAV_MAIN } from "@/lib/company";
 import { getPublicSiteSettings } from "@/lib/content/loaders";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 
 export async function SiteFooter() {
   const { socialLinks, contactInfo } = await getPublicSiteSettings();
@@ -18,7 +19,7 @@ export async function SiteFooter() {
     <footer className="border-t border-slate-200 bg-navy-950 text-slate-200">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
-          <p className="font-display text-2xl font-bold text-white">{COMPANY.brand}</p>
+          <BrandLogo />
           <p className="mt-3 text-sm leading-relaxed text-slate-300">{COMPANY.legalName}</p>
           <p className="mt-4 text-sm text-slate-400">CIN: {COMPANY.cin}</p>
           <p className="mt-4 text-sm leading-relaxed text-slate-300">

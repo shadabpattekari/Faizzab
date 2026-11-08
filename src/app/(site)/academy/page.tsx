@@ -8,12 +8,15 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-dynamic";
 
+/** Set NEXT_PUBLIC_ACADEMY_URL (e.g. https://academy.faizzab.com) once the Academy portal is public. */
+const ACADEMY_URL = process.env.NEXT_PUBLIC_ACADEMY_URL?.trim() || "";
+
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
     path: "/academy",
-    title: "Academy — Coming Soon",
+    title: "Academy — Practitioner Courses and GRC Internships",
     description:
-      "FaizZab Academy is coming soon with practical learning paths across AI governance, privacy, ISO 27001 and GRC.",
+      "FaizZab Academy: practical ISO/IEC 27001 and GRC learning with module workbooks, reviewed labs and 2, 3 and 6-month internships.",
   });
 }
 
@@ -53,23 +56,39 @@ export default async function AcademyPage() {
           <StatusBadge status="COMING_SOON" />
           <h1 className="mt-5 font-display text-4xl font-bold sm:text-5xl">FaizZab Academy</h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
-            Planned practitioner learning focused on turning governance and compliance concepts
-            into structured implementation work, useful evidence and stronger operating habits.
+            Practitioner learning that turns governance and compliance concepts into real
+            implementation work: short lessons, one workbook per module, reviewed practical labs
+            and GRC internships with mentor review. The first course is ISO/IEC 27001
+            Implementation Practitioner.
           </p>
-          <a
-            href="#launch-list"
-            className="mt-8 inline-flex rounded-md bg-teal-700 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-teal-800"
-          >
-            Join Launch List
-          </a>
+          <div className="mt-8 flex flex-wrap gap-3">
+            {ACADEMY_URL ? (
+              <a
+                href={ACADEMY_URL}
+                className="inline-flex rounded-md bg-teal-700 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-teal-800"
+              >
+                Go to FaizZab Academy
+              </a>
+            ) : null}
+            <a
+              href="#launch-list"
+              className={
+                ACADEMY_URL
+                  ? "inline-flex rounded-md bg-white/10 px-6 py-3 font-semibold text-white ring-1 ring-white/40 transition hover:bg-white/20"
+                  : "inline-flex rounded-md bg-teal-700 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-teal-800"
+              }
+            >
+              Join Launch List
+            </a>
+          </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
         <h2 className="font-display text-3xl font-bold text-navy-950">Planned courses</h2>
         <p className="mt-3 max-w-3xl leading-7 text-slate-600">
-          Every course shown below is coming soon. Enrolment, lessons and certificates are not
-          currently available.
+          Courses open in stages, starting with ISO/IEC 27001 Implementation Practitioner. Join the
+          launch list to hear when enrolment opens for the course you need.
         </p>
         <div className="mt-9 grid gap-5 md:grid-cols-2">
           {courses.map((course) => (
@@ -96,10 +115,15 @@ export default async function AcademyPage() {
       <section className="section-alt border-y border-slate-200">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
           <h2 className="font-display text-3xl font-bold text-navy-950">
-            Planned learning experience
+            How you learn at FaizZab Academy
           </h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {["Practical lessons", "Applied labs", "Evidence-oriented assignments", "Capstone pathways"].map(
+            {[
+              "Short practical lessons with worked examples",
+              "One workbook per module to practise in",
+              "Practical labs reviewed before they count",
+              "Module assessments and a capstone",
+            ].map(
               (feature) => (
                 <div key={feature} className="rounded-lg border border-slate-200 bg-white p-5">
                   <p className="font-semibold text-navy-950">{feature}</p>
@@ -108,8 +132,31 @@ export default async function AcademyPage() {
             )}
           </div>
           <p className="mt-6 text-sm leading-6 text-slate-500">
-            These capabilities describe planned product direction and may change before release.
+            Course content and features may be refined as each course opens.
           </p>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <h2 className="font-display text-3xl font-bold text-navy-950">GRC internships</h2>
+        <p className="mt-3 max-w-3xl leading-7 text-slate-600">
+          One internship programme in 2, 3 or 6-month formats, with modules released week by week,
+          practical labs, a project and mentor review.
+        </p>
+        <div className="mt-8 grid gap-5 md:grid-cols-2">
+          <article className="rounded-xl border border-slate-200 bg-white p-6">
+            <h3 className="font-display text-xl font-bold text-navy-950">Academic pathway</h3>
+            <p className="mt-3 leading-7 text-slate-600">
+              For college students through institutions that partner with FaizZab Integrity.
+            </p>
+          </article>
+          <article className="rounded-xl border border-slate-200 bg-white p-6">
+            <h3 className="font-display text-xl font-bold text-navy-950">Professional pathway</h3>
+            <p className="mt-3 leading-7 text-slate-600">
+              For graduates, job seekers, working professionals and career switchers who enrol
+              individually.
+            </p>
+          </article>
         </div>
       </section>
 
