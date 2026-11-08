@@ -4,7 +4,8 @@ import { COMPANY } from "@/lib/company";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
-  description: "Cookie Policy for the FaizZab website.",
+  description:
+    "How the FaizZab website uses cookies: only one essential cookie for administrator sign-in, how it is protected, and how to control cookies in your browser.",
   alternates: { canonical: "/cookie-policy" },
 };
 
