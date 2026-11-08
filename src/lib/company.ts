@@ -9,6 +9,15 @@ export const COMPANY = {
   telephone: "+91 91757 68019",
   telephoneDisplay: "+91 91757 68019",
   grievances: "Nazneen Pattekari, Director",
+  corporateOffice: {
+    lines: [
+      "314, Gera Imperium Rise,",
+      "Opposite Wipro Circle, Hinjewadi Phase 2,",
+      "Pune, Maharashtra 411057, India",
+    ],
+    singleLine:
+      "314, Gera Imperium Rise, Opposite Wipro Circle, Hinjewadi Phase 2, Pune, Maharashtra 411057, India",
+  },
   registeredOffice: {
     lines: [
       "Flat No. 512, SKY I Star, Town II, Bldg No. 6,",

@@ -22,7 +22,16 @@ export async function SiteFooter() {
           <BrandLogo />
           <p className="mt-3 text-sm leading-relaxed text-slate-300">{COMPANY.legalName}</p>
           <p className="mt-4 text-sm text-slate-400">CIN: {COMPANY.cin}</p>
-          <p className="mt-4 text-sm leading-relaxed text-slate-300">
+          <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Corporate office</p>
+          <p className="mt-1 text-sm leading-relaxed text-slate-300">
+            {COMPANY.corporateOffice.lines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </p>
+          <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Registered office</p>
+          <p className="mt-1 text-sm leading-relaxed text-slate-300">
             {COMPANY.registeredOffice.lines.map((line) => (
               <span key={line} className="block">
                 {line}

@@ -19,6 +19,8 @@ describe("company identity", () => {
     expect(COMPANY.telephone).toBe("+91 91757 68019");
     expect(COMPANY.grievances).toBe("Nazneen Pattekari, Director");
     expect(COMPANY.registeredOffice.singleLine).toContain("Pune - 412115");
+    expect(COMPANY.corporateOffice.singleLine).toContain("Gera Imperium Rise");
+    expect(COMPANY.corporateOffice.singleLine).toContain("411057");
     expect(COMPANY.legalName).not.toContain("Consultancy");
   });
 

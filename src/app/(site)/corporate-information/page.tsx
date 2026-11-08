@@ -37,6 +37,9 @@ export default function CorporateInformationPage() {
           </div>
         </dl>
 
+        <h2>Corporate office</h2>
+        <p>{COMPANY.corporateOffice.singleLine}</p>
+
         <h2>Registered office</h2>
         <p>{COMPANY.registeredOffice.singleLine}</p>
 
