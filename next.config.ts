@@ -7,6 +7,13 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Hostinger Node hosting compatible — avoid forcing Docker/Vercel-only features
   output: "standalone",
+  // Hostinger shared hosting caps how many processes an account may start. Next.js
+  // normally builds pages with one worker per CPU, which hit that cap (spawn EAGAIN).
+  // One worker keeps the build inside the limit; the site is small, so it stays quick.
+  experimental: {
+    cpus: 1,
+    staticGenerationMaxConcurrency: 1,
+  },
   async headers() {
     const scriptSrc = isProd
       ? "script-src 'self' 'unsafe-inline'"
