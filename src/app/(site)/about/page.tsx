@@ -65,6 +65,12 @@ export default function AboutPage() {
               <dd className="mt-1 text-slate-600">{COMPANY.cin}</dd>
             </div>
             <div>
+              <dt className="font-semibold text-navy-950">Corporate office</dt>
+              <dd className="mt-1 leading-6 text-slate-600">
+                {COMPANY.corporateOffice.singleLine}
+              </dd>
+            </div>
+            <div>
               <dt className="font-semibold text-navy-950">Registered office</dt>
               <dd className="mt-1 leading-6 text-slate-600">
                 {COMPANY.registeredOffice.singleLine}

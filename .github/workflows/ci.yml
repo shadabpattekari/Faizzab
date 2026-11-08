@@ -32,18 +32,28 @@ jobs:
       - run: npm test
       - run: npm run build
 
-  preview:
-    name: Screenshots for review (claude/* branches)
-    if: github.event_name == 'push' && startsWith(github.ref_name, 'claude/')
+  qa:
+    name: QA (all pages, links, forms, accessibility, SEO, headers)
     needs: checks
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     permissions:
       contents: write
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: qa-root-only
+          MYSQL_DATABASE: faizzab_qa
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pqa-root-only"
+          --health-interval=5s --health-timeout=5s --health-retries=20
     env:
       NEXT_TELEMETRY_DISABLED: "1"
       APP_URL: http://localhost:3000
-      SESSION_SECRET: preview-only-not-a-real-secret-0123456789abcdef
+      DATABASE_URL: mysql://root:qa-root-only@127.0.0.1:3306/faizzab_qa
+      SESSION_SECRET: qa-only-not-a-real-secret-0123456789abcdef
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -51,17 +61,30 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Create the test database (same migrations and seed as Hostinger)
+        run: |
+          npx prisma migrate deploy
+          npm run db:seed
       - run: npm run build
-      - name: "Start the site (no database: pages use their built-in content)"
+      - name: Start the site
         run: |
-          (npm run start > /tmp/server.log 2>&1 &)
+          (NODE_ENV=production npm run start > /tmp/server.log 2>&1 &)
           for i in $(seq 1 60); do curl -sf http://localhost:3000 >/dev/null && break; sleep 2; done
-      - name: Screenshots at 1440, 1280, 768 and 375 px
+      - name: Install the QA tools (not part of the site build)
         run: |
-          npm i --no-save playwright@1.64.1
+          npm i --no-save @playwright/test@1.64.1 @axe-core/playwright@4.10.2
           npx playwright install --with-deps chromium
-          node .github/scripts/screenshots.mjs http://localhost:3000 /tmp/shots / /academy /academy/iso-27001-practical-implementer /contact
-      - name: Publish to the qa-screenshots branch
+      - name: Run QA tests
+        run: npx playwright test -c qa/playwright.config.ts
+      - name: Server log (on failure)
+        if: failure()
+        run: tail -100 /tmp/server.log
+      - name: Screenshots for review (claude/* branches)
+        if: always() && github.event_name == 'push' && startsWith(github.ref_name, 'claude/')
+        run: |
+          node .github/scripts/screenshots.mjs http://localhost:3000 /tmp/shots / /about /services /services/iso-27001-grc-readiness-assessment /industries /academy /academy/iso-27001-practical-implementer /contact /corporate-information
+      - name: Publish screenshots to the qa-screenshots branch
+        if: always() && github.event_name == 'push' && startsWith(github.ref_name, 'claude/')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: .github/scripts/publish-screenshots.sh /tmp/shots "website/${GITHUB_REF_NAME//\//-}"

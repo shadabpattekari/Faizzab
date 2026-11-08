@@ -1,5 +1,13 @@
 import { BUSINESS_STATUS } from "@/lib/company";
 
+/** The flagship course opens first; the other courses are planned. */
+export const ACADEMY_FLAGSHIP_SLUG = "iso-27001-practical-implementer";
+
+/** Public wording for an Academy course status (database values stay unchanged). */
+export function academyCourseBadge(slug: string): string {
+  return slug === ACADEMY_FLAGSHIP_SLUG ? "ENROLLING SOON" : "PLANNED";
+}
+
 export const ACADEMY_COURSES = [
   {
     slug: "iso-27001-practical-implementer",

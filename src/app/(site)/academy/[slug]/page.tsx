@@ -4,6 +4,7 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { ButtonLink } from "@/components/ui/Button";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { ACADEMY_FLAGSHIP_SLUG, academyCourseBadge } from "@/lib/content/products";
 import { COMPANY } from "@/lib/company";
 import { getPublishedCourseBySlug, getPublishedCourses } from "@/lib/content/loaders";
 import { buildPageMetadata } from "@/lib/seo/metadata";
@@ -54,7 +55,7 @@ export default async function AcademyCoursePage({ params }: PageProps) {
               items={[{ label: "Academy", href: "/academy" }, { label: course.title }]}
             />
           </div>
-          <StatusBadge status={course.status} />
+          <StatusBadge label={academyCourseBadge(course.slug)} status={course.status} />
           <h1 className="mt-5 max-w-4xl font-display text-4xl font-bold sm:text-5xl">
             {course.title}
           </h1>
@@ -89,8 +90,9 @@ export default async function AcademyCoursePage({ params }: PageProps) {
           <div className="mt-7 border-t border-slate-200 pt-6">
             <p className="font-semibold text-navy-950">Availability</p>
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              This course is coming soon. Registration, payment, course access and certificates
-              are not currently available.
+              {course.slug === ACADEMY_FLAGSHIP_SLUG
+                ? "Enrolling soon. Join the launch list and we will tell you when enrolment opens."
+                : "Planned. Join the launch list to hear when this course is scheduled."}
             </p>
           </div>
         </aside>

@@ -37,6 +37,9 @@ export default function CorporateInformationPage() {
           </div>
         </dl>
 
+        <h2>Corporate office</h2>
+        <p>{COMPANY.corporateOffice.singleLine}</p>
+
         <h2>Registered office</h2>
         <p>{COMPANY.registeredOffice.singleLine}</p>
 
@@ -51,7 +54,6 @@ export default function CorporateInformationPage() {
               {COMPANY.telephoneDisplay}
             </a>
           </li>
-          <li>Queries / Grievances: {COMPANY.grievances}</li>
         </ul>
 
         <h2>Website</h2>

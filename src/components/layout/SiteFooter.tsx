@@ -22,7 +22,16 @@ export async function SiteFooter() {
           <BrandLogo />
           <p className="mt-3 text-sm leading-relaxed text-slate-300">{COMPANY.legalName}</p>
           <p className="mt-4 text-sm text-slate-400">CIN: {COMPANY.cin}</p>
-          <p className="mt-4 text-sm leading-relaxed text-slate-300">
+          <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Corporate office</p>
+          <p className="mt-1 text-sm leading-relaxed text-slate-300">
+            {COMPANY.corporateOffice.lines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </p>
+          <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Registered office</p>
+          <p className="mt-1 text-sm leading-relaxed text-slate-300">
             {COMPANY.registeredOffice.lines.map((line) => (
               <span key={line} className="block">
                 {line}
@@ -73,7 +82,11 @@ export async function SiteFooter() {
                 {telephone}
               </a>
             </li>
-            <li className="pt-2 text-slate-400">Queries / Grievances: {COMPANY.grievances}</li>
+            <li>
+              <a className="hover:text-teal-300" href={COMPANY.whatsapp} rel="noopener noreferrer" target="_blank">
+                WhatsApp
+              </a>
+            </li>
           </ul>
           <p className="mt-6 text-sm font-semibold uppercase tracking-wider text-slate-400">Legal</p>
           <ul className="mt-3 space-y-2">
@@ -92,7 +105,6 @@ export async function SiteFooter() {
           <p>
             © {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.
           </p>
-          <p>Domain: {COMPANY.domain}</p>
         </div>
       </div>
     </footer>

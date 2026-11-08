@@ -4,7 +4,8 @@ import { COMPANY } from "@/lib/company";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
-  description: "Terms governing use of the FaizZab website.",
+  description:
+    "Terms of use for the FaizZab website, including content, enquiries, intellectual property and liability, from FaizZab Integrity Private Limited.",
   alternates: { canonical: "/terms-of-use" },
 };
 
